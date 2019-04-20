@@ -35,7 +35,7 @@ public:
 
     void writeNodeToFile(raw_fd_ostream& fl, unsigned rshift = 0) {
         std::string rs = "";
-        for (int i=0; i<rshift; i++)
+        for (unsigned i=0; i<rshift; i++)
             rs += " ";
 
         fl << rs << "\"" << nodeName << "\"" << " [shape=record," << "\n";
@@ -67,12 +67,12 @@ namespace {
 
 struct BytecodePrinter : public FunctionPass {
 private:
-    std::unordered_map<std::string, unsigned> bbNaming;
+    std::unordered_map<std::string, unsigned int> bbNaming;
     std::vector<DotNode> dotNodes;
-    unsigned idCount;
-    unsigned vCount;
+    unsigned int idCount;
+    unsigned int vCount;
 
-    unsigned addBB(BasicBlock& bb) {
+    unsigned int addBB(BasicBlock& bb) {
         if (bbNaming.find(bb.getName()) == end(bbNaming)) {
             bbNaming[bb.getName()] = idCount++;
         }
@@ -80,7 +80,7 @@ private:
         return bbNaming[bb.getName()];
     }
 
-    unsigned getBBId(const std::string& name) {
+    unsigned int getBBId(const std::string& name) {
         return bbNaming[name];
     }
 
@@ -124,18 +124,18 @@ private:
             rep += " " + std::to_string(CI->getSExtValue());
         } else if (isa<ConstantExpr>(v)) {
             auto* CE = cast<ConstantExpr>(v);
-            rep += " [";
+            rep += " (";
             for (int j=0; j<CE->getNumOperands(); j++) {
                 rep += getOperandStr(CE->getOperand(j));
             }
-            rep += " ]";
+            rep += " )";
         } else if (isa<ConstantAggregate>(v)) {
             auto* CA = cast<ConstantAggregate>(v);
-            rep += " [";
+            rep += " (";
             for (int j=0; j<CA->getNumOperands(); j++) {
                 rep += getOperandStr(CA->getOperand(j));
             }
-            rep += " ]";
+            rep += " )";
         } else if (isa<PHINode>(v)) {
             auto* PN = cast<PHINode>(v);
             rep += " [";
@@ -194,7 +194,7 @@ public:
 
                 rep += I.getOpcodeName();
                 
-                for (int i=0; i<I.getNumOperands(); i++) {
+                for (unsigned i=0; i<I.getNumOperands(); i++) {
                     auto v = I.getOperand(i);
                     rep += getOperandStr(v);    
                 }
