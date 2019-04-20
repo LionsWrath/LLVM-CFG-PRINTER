@@ -65,7 +65,7 @@ public:
 
 namespace {
 
-struct BytecodePrinter : public FunctionPass {
+struct BitcodePrinter : public FunctionPass {
 private:
     std::unordered_map<std::string, unsigned int> bbNaming;
     std::vector<DotNode> dotNodes;
@@ -144,7 +144,8 @@ private:
             }
             rep += " ]";
         } else {
-            rep += " %" + v->getName().str(); 
+            if (v->getName() != "")
+                rep += " %" + v->getName().str(); 
         }  
 
         return rep;
@@ -160,7 +161,7 @@ private:
 public:
     static char ID;
 
-    BytecodePrinter() : FunctionPass(ID), 
+    BitcodePrinter() : FunctionPass(ID), 
         bbNaming(), dotNodes(), idCount(0), vCount(0) {}
 
     bool runOnFunction(Function &F) override {
@@ -215,10 +216,10 @@ public:
 
 } /* anonymous namespace end */
 
-char BytecodePrinter::ID = 0;
+char BitcodePrinter::ID = 0;
 
-static RegisterPass<BytecodePrinter> X(
-        "bytecode-printer", 
+static RegisterPass<BitcodePrinter> X(
+        "bitcode-printer", 
         "Pass to print the CFG",
         false,
         false);

@@ -22,8 +22,8 @@
 
 To add the Pass to the llvm compilation tree:
 
-1. `cp BytecodePrinter <path to llvm source>/llvm/lib/Transforms/`
-1. Add `add_subdirectory(BytecodePrinter)` to `<path to llvm source>/llvm/lib/Transforms/CMakeLists.txt`
+1. `cp BitcodePrinter <path to llvm source>/llvm/lib/Transforms/`
+1. Add `add_subdirectory(BitcodePrinter)` to `<path to llvm source>/llvm/lib/Transforms/CMakeLists.txt`
 
 Then, we can compile the llvm normally (now with our pass included):
 
@@ -37,7 +37,7 @@ Then, we can compile the llvm normally (now with our pass included):
 
 ### Outside the LLVM compilation
 
-`opt -load BytecodePrinter/LLVMBytecodePrinter.so -bytecode-printer < <filename>.bc`
+`opt -load BitcodePrinter/LLVMBitcodePrinter.so -bitcode-printer < <filename>.bc`
 
 ### Inside the LLVM compilation
 
@@ -48,6 +48,6 @@ Then, we can compile the llvm normally (now with our pass included):
 The generated .dot files will be in the same directory that the command was run with the name `
 <function name>.dot`. If you want to add a suffix name in the name of the `.dot` output files, you can use the `-s <suffix>` option:
 
-`opt -load BytecodePrinter/LLVMBytecodePrinter.so -bytecode-printer -s <suffix> < <filename>.bc`
+`opt -load BitcodePrinter/LLVMBitcodePrinter.so -bitcode-printer -s <suffix> < <filename>.bc`
 
 The resulting files now will have the name `<suffix>_<function name>.dot`. 

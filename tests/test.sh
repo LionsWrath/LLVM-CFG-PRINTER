@@ -5,5 +5,5 @@ tests=('Bubblesort' 'IntMM' 'Oscar' 'Perm' 'Puzzle' 'Queens' 'Quicksort' 'RealMM
 for ((i=0; i<${#tests[@]}; i++)) do
     file=${tests[${i}]}
 
-    opt -load ../build/BytecodePrinter/LLVMBytecodePrinter.so -bytecode-printer -s ${file} < ${file}.bc 
+    opt -load ../build/BitcodePrinter/LLVMBitcodePrinter.so -bitcode-printer -s ${file} < ${file}.bc 
 done

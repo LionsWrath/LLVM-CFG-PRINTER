@@ -7,5 +7,5 @@ for ((i=0; i<${#dots[@]}; i++)) do
 
     echo ${file}.dot . . .
     dot -Tpdf ${file}.dot -o ${file}.pdf
-    xdg-open ${file}.pdf
+    #xdg-open ${file}.pdf
 done
