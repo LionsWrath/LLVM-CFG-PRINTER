@@ -16,14 +16,14 @@ static cl::opt<std::string> FilenameSuffix("s",
 
 class DotNode {
 private:
-    unsigned nodeId;
+    unsigned int nodeId;
     std::string nodeName;
     std::vector<std::string> instr;
     std::vector<std::string> succs;
 
 public:
-    DotNode(std::string name, unsigned id): 
-        nodeName(name), nodeId(id), instr(), succs() {}
+    DotNode(std::string name, unsigned int id): 
+        nodeId(id), nodeName(name), instr(), succs() {}
 
     void addInstr(std::string rep) {
         instr.push_back(rep);
@@ -56,7 +56,7 @@ public:
         } else {
             fl << "\\l|{<s0>T|<s1>F}}\"];\n";
         
-            for (int i=0; i<succs.size(); i++) {
+            for (unsigned i=0; i<(unsigned)succs.size(); i++) {
                 fl << rs << "\"" << nodeName << "\":s" << i << " -> \"" << succs[i] << "\";\n";
             }
         }
@@ -125,21 +125,21 @@ private:
         } else if (isa<ConstantExpr>(v)) {
             auto* CE = cast<ConstantExpr>(v);
             rep += " (";
-            for (int j=0; j<CE->getNumOperands(); j++) {
+            for (unsigned int j=0; j<CE->getNumOperands(); j++) {
                 rep += getOperandStr(CE->getOperand(j));
             }
             rep += " )";
         } else if (isa<ConstantAggregate>(v)) {
             auto* CA = cast<ConstantAggregate>(v);
             rep += " (";
-            for (int j=0; j<CA->getNumOperands(); j++) {
+            for (unsigned int j=0; j<CA->getNumOperands(); j++) {
                 rep += getOperandStr(CA->getOperand(j));
             }
             rep += " )";
         } else if (isa<PHINode>(v)) {
             auto* PN = cast<PHINode>(v);
             rep += " [";
-            for (int j=0; j<PN->getNumOperands(); j++) {
+            for (unsigned int j=0; j<PN->getNumOperands(); j++) {
                 rep += getOperandStr(PN->getOperand(j));
             }
             rep += " ]";
