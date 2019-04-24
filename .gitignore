@@ -22,5 +22,7 @@ tags
 *.pdf
 tests/*.dot
 tests/*.pdf
+tests/*.bc
+tests/*.ssa.bc
 build
 

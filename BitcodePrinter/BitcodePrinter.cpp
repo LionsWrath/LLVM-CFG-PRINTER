@@ -16,6 +16,7 @@ static cl::opt<std::string> FilenameSuffix("s",
 
 class DotNode {
 private:
+    bool isTerminatorSwitch;
     unsigned int nodeId;
     std::string nodeName;
     std::vector<std::string> instr;
@@ -23,7 +24,8 @@ private:
 
 public:
     DotNode(std::string name, unsigned int id): 
-        nodeId(id), nodeName(name), instr(), succs() {}
+        isTerminatorSwitch(false), nodeId(id), 
+        nodeName(name), instr(), succs() {}
 
     void addInstr(std::string rep) {
         instr.push_back(rep);
@@ -31,6 +33,10 @@ public:
 
     void addSucc(std::string name) {
         succs.push_back(name);
+    }
+
+    void setTerminatorSwitch() {
+        isTerminatorSwitch = true;
     }
 
     void writeNodeToFile(raw_fd_ostream& fl, unsigned rshift = 0) {
@@ -47,8 +53,22 @@ public:
             if (rep != *(instr.rbegin()))
                 fl << "\n";
         }
+
+        if (isTerminatorSwitch) {
+            fl << "\\l\n" << "            |{";
+
+            for (unsigned i=0; i<(unsigned)succs.size()-1; i++) {
+                fl << "<s" << i << ">" << i << "|";
+            }
+
+            fl << "<s" << succs.size() - 1 << ">" << succs.size() - 1;
+            fl << "}}\"];\n";
         
-        if (succs.size() == 1) {
+            for (unsigned i=0; i<(unsigned)succs.size(); i++) {
+                fl << rs << "\"" << nodeName << "\":s" << i << " -> \"" << succs[i] << "\";\n";
+            }
+       
+        } else if (succs.size() == 1) {
             fl << "\\l}\"];\n";
             fl << rs << "\"" << nodeName << "\" -> \"" << succs[0] << "\";\n";
         } else if (succs.size() == 0){ 
@@ -179,6 +199,10 @@ public:
                 
                 // Add the successors
                 if (I.isTerminator()) {
+                    
+                    if (I.getOpcode() == Instruction::Switch)
+                        node.setTerminatorSwitch();
+                        
                     for (unsigned i=0; i<I.getNumSuccessors(); i++) {
                         BasicBlock *succ = I.getSuccessor(i);
                         addBB(*succ);
